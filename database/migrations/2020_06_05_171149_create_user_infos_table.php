@@ -16,13 +16,13 @@ class CreateUserInfosTable extends Migration
         Schema::create('user_infos', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id');
-            $table->string('age')->nullable();
-            $table->string('height')->nullable();
-            $table->string('weight')->nullable();
-            $table->string('blood_group')->nullable();
+            $table->string('age');
+            $table->string('weight');
+            $table->string('blood_group');
             $table->string('lat')->nullable();
-            $table->string('lang')->nullable();
-            $table->boolean('is_donner')->default(0);
+            $table->string('long')->nullable();
+            $table->string('device_id')->nullable();
+            $table->boolean('is_donor')->default(0);
             $table->boolean('is_verified')->default(0);
             $table->date('test_positive_date')->nullable();
             $table->date('test_negative_date')->nullable();
