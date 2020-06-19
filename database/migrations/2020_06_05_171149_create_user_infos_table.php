@@ -19,6 +19,7 @@ class CreateUserInfosTable extends Migration
             $table->string('age');
             $table->string('weight');
             $table->string('blood_group');
+            $table->text('image')->nullable();
             $table->string('lat')->nullable();
             $table->string('long')->nullable();
             $table->string('device_id')->nullable();

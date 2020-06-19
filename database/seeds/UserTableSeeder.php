@@ -26,6 +26,7 @@ class UserTableSeeder extends Seeder
                 'password' => bcrypt('p@$$word'), // password
                 'remember_token' => Str::random(10),
                 'role' => 'super_admin',
+                'sex' => 'male',
             ],
             [
                 'username' => 'Admin',
@@ -36,6 +37,7 @@ class UserTableSeeder extends Seeder
                 'password' => bcrypt('p@$$word'), // password
                 'remember_token' => Str::random(10),
                 'role' => 'admin',
+                'sex' => 'male',
             ],
             [
                 'username' => 'Donor',
@@ -46,6 +48,7 @@ class UserTableSeeder extends Seeder
                 'password' => bcrypt('p@$$word'), // password
                 'remember_token' => Str::random(10),
                 'role' => 'donor',
+                'sex' => 'male',
             ],
         ];
 

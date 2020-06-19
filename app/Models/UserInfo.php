@@ -12,6 +12,6 @@ class UserInfo extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'age', 'weight', 'blood_group', 'lat', 'long', 'device_id', 'is_donner','is_verified', 'test_positive_date', 'test_negative_date', 'test_negative_date_second', 'last_donation_date'
+        'user_id', 'age', 'weight', 'image', 'blood_group', 'lat', 'long', 'device_id', 'is_donner','is_verified', 'test_positive_date', 'test_negative_date', 'test_negative_date_second', 'last_donation_date'
     ];
 }

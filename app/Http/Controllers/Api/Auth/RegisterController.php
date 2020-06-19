@@ -36,6 +36,7 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6'],
             'phone' => ['required', 'string', 'max:255', 'unique:users'],
+            'sex' => ['required', 'string'],
         ]);
 
         if ($validator->fails()) {
@@ -61,6 +62,7 @@ class RegisterController extends Controller
 
             return respondError(FAIL);
         } catch (\Exception $e) {
+            return respondError($e->getMessage());
             return respondError('Failed to register!');
         }
     }
@@ -97,11 +99,20 @@ class RegisterController extends Controller
         try {
             $user = User::where('id', $request->user_id)->first();
 
+            if(!empty($request->image)){
+                $file = base64_decode($request->image);
+                $folderName = 'public/images/donors/';
+                $safeName = strtotime(date('Y-m-d H:i:s')).'.'.'png';
+                $destinationPath = public_path() . $folderName;
+                $success = file_put_contents(public_path().'/images/donors/'.$safeName, $file);
+            }
+
             if(!empty($user)){
                 UserInfo::create([
                     'user_id' => $request->user_id,
                     'age' => $request->age,
                     'weight' => $request->weight,
+                    'image' => !empty($safeName) ? $safeName : '',
                     'blood_group' => $request->blood_group,
                     'lat' => $request->lat,
                     'long' => $request->long,
@@ -137,6 +148,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'phone' => $data['phone'],
             'role' => 'donor',
+            'sex' => $data['sex'],
             'password' => Hash::make($data['password']),
         ]);
     }

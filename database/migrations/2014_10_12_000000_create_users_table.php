@@ -21,7 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('phone')->unique();
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');
-            $table->string('role')->default('doner');
+            $table->string('role')->default('donor');
+            $table->string('sex');
             $table->string('status')->default('active');
             $table->rememberToken();
             $table->timestamps();
