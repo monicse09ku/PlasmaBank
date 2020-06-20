@@ -117,6 +117,7 @@ class RegisterController extends Controller
                     'lat' => $request->lat,
                     'long' => $request->long,
                     'device_id' => $request->device_id,
+                    'is_donor' => $this->checkIsDonor($user, $request),
                     'test_positive_date' => $request->test_positive_date,
                     'test_negative_date' => $request->test_negative_date,
                     'test_negative_date_second' => $request->test_negative_date_second,
@@ -169,8 +170,12 @@ class RegisterController extends Controller
         throw new \Exception('Failed to create generate token!');
     }
 
-    protected function isDonor($request)
+    protected function checkIsDonor($user, $request)
     {
-        # code...
+        if($request->age > 18 && $request->age < 55 && $request->weight > 55){
+            return true;
+        }
+
+        return false;
     }
 }
