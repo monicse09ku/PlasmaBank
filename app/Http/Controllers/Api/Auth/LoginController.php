@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use App\Models\UserInfo;
 
 class LoginController extends Controller
 {
@@ -53,6 +54,7 @@ class LoginController extends Controller
         if ($token = $user->createToken('Plasma Bank Password Grant Client')->accessToken) {
             return (new UserResource($user))->additional([
                 'token' => $token,
+                'userInfo' => UserInfo::where('user_id', $user->id)->first()
             ]);
         }
 
