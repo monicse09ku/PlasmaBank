@@ -101,9 +101,7 @@ class RegisterController extends Controller
 
             if(!empty($request->image)){
                 $file = base64_decode($request->image);
-                $folderName = 'public/images/donors/';
                 $safeName = strtotime(date('Y-m-d H:i:s')).'.'.'png';
-                $destinationPath = public_path() . $folderName;
                 $success = file_put_contents(public_path().'/images/donors/'.$safeName, $file);
             }
 
@@ -124,7 +122,10 @@ class RegisterController extends Controller
 
                 ]);
 
-                return respondSuccess('User Registered Successfully');
+                return (new UserResource($user))->additional([
+                    'userInfo' => UserInfo::where('user_id', $user->id)->first()
+                ]);
+
             }else{
                 return respondError('User not found!!!');
             }

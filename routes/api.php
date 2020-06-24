@@ -26,10 +26,11 @@ Route::middleware('auth:api')
     ->group(function () {
         
         Route::post('/complete-registration', 'Auth\RegisterController@completeRegistration');
+        Route::post('/upload-avatar', 'User\AccountSettingController@uploadAvatar');
 
         Route::get('/me', 'User\AccountSettingController@me');
-        Route::post('/update-profile', 'User\AccountSettingController@update');
-        Route::post('/reset/password', 'User\AccountSettingController@resetPassword');
+        //Route::post('/update-profile', 'User\AccountSettingController@update');
+        //Route::post('/reset/password', 'User\AccountSettingController@resetPassword');
 
         //Route::apiResource('installations', 'Installation\InstallationController')->except(['index']);
 
