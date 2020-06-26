@@ -76,6 +76,7 @@ class RegisterController extends Controller
             'blood_group' => ['required', 'string'],
             'lat' => ['required', 'string'],
             'long' => ['required', 'string'],
+            'district' => ['required', 'string'],
             'device_id' => ['required', 'string'],
             'test_positive_date' => 'required',
         ]);
@@ -114,6 +115,7 @@ class RegisterController extends Controller
                     'blood_group' => $request->blood_group,
                     'lat' => $request->lat,
                     'long' => $request->long,
+                    'district' => $request->district,
                     'device_id' => $request->device_id,
                     'is_donor' => $this->checkIsDonor($user, $request),
                     'test_positive_date' => $request->test_positive_date,

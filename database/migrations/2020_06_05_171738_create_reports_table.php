@@ -19,6 +19,7 @@ class CreateReportsTable extends Migration
             $table->bigInteger('reporter_id');
             $table->string('subject')->nullable();
             $table->string('message')->nullable();
+            $table->string('rating')->default(1);
             $table->boolean('status')->default(0);
             $table->timestamps();
         });

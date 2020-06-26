@@ -28,14 +28,9 @@ Route::middleware('auth:api')
         Route::post('/complete-registration', 'Auth\RegisterController@completeRegistration');
         Route::post('/upload-avatar', 'User\AccountSettingController@uploadAvatar');
 
+        Route::post('/search-donor', 'Donor\DonorController@searchDonor');
+        Route::post('/rate-donor', 'Donor\DonorController@ratingDonor');
+
         Route::get('/me', 'User\AccountSettingController@me');
-        //Route::post('/update-profile', 'User\AccountSettingController@update');
-        //Route::post('/reset/password', 'User\AccountSettingController@resetPassword');
-
-        //Route::apiResource('installations', 'Installation\InstallationController')->except(['index']);
-
-        
-        //Route::get('/types', 'Installation\InstallationController@allTypes');
-
         Route::post('/logout', 'Auth\LoginController@logout');
     });

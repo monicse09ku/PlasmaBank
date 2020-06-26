@@ -22,6 +22,7 @@ class CreateUserInfosTable extends Migration
             $table->text('image')->nullable();
             $table->string('lat')->nullable();
             $table->string('long')->nullable();
+            $table->string('district');
             $table->string('device_id')->nullable();
             $table->boolean('is_donor')->default(0);
             $table->boolean('is_verified')->default(0);
