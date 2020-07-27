@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\Request;
-use Auth;
 
 class LoginController extends Controller
 {
@@ -38,36 +36,5 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-    }
-
-    /**
-     * Get the needed authorization credentials from the request.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return array
-     */
-    protected function credentials(Request $request)
-    {
-        return ['phone'=>$request->get('email'),'password'=>$request->get('password')];
-
-        //following code will work if we use email and phone both
-        // if(is_numeric($request->get('email'))){
-        //     return ['phone'=>$request->get('email'),'password'=>$request->get('password')];
-        // }
-        // return $request->only($this->username(), 'password');
-    }
-
-    protected function redirectTo()
-    {
-        if(Auth::user()->role == 'donor'){
-            return '/';
-        }else{
-            return RouteServiceProvider::HOME;
-        }  
-    }
-
-    public function logout(Request $request) {
-        Auth::logout();
-        return redirect('/');
     }
 }

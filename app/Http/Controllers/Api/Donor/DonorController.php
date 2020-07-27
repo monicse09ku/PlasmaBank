@@ -11,7 +11,8 @@ class DonorController extends Controller
 {
     public function searchDonor(Request $request)
     {
-        
+
+
         $validator = \Validator::make($request->all(), [
             'blood_group' => ['required', 'string'],
             'district' => ['required', 'string'],
@@ -23,12 +24,12 @@ class DonorController extends Controller
 
         try {
             $donors = UserInfo::where([
-            	['blood_group', '=', $request->blood_group],
-            	['district', '=', $request->district]
+                ['blood_group', '=', $request->blood_group],
+                ['district', '=', $request->district]
             ])->get();
 
-            if(!empty($donors)){
-            	return respond($donors);
+            if (!empty($donors)) {
+                return respond($donors);
             }
 
             return respondError('No Donor Found');
@@ -42,7 +43,7 @@ class DonorController extends Controller
 
     public function ratingDonor(Request $request)
     {
-    	$validator = \Validator::make($request->all(), [
+        $validator = \Validator::make($request->all(), [
             'user_id' => ['required'],
             'reporter_id' => ['required'],
             'subject' => ['required', 'string'],
@@ -56,12 +57,12 @@ class DonorController extends Controller
 
         try {
             Report::create([
-	            'user_id' => $request->user_id,
-	            'reporter_id' => $request->reporter_id,
-	            'subject' => $request->subject,
-	            'message' => $request->message,
-	            'rating' => $request->rating,
-	        ]);
+                'user_id' => $request->user_id,
+                'reporter_id' => $request->reporter_id,
+                'subject' => $request->subject,
+                'message' => $request->message,
+                'rating' => $request->rating,
+            ]);
 
             return respondSuccess('Successfully Done.');
         } catch (\Exception $e) {

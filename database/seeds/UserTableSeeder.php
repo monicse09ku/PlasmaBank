@@ -16,7 +16,7 @@ class UserTableSeeder extends Seeder
     {
         User::truncate();
 
-    	$users = [
+        $users = [
             [
                 'username' => 'Super Admin',
                 'email' => 'superadmin@gmail.com',

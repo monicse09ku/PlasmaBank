@@ -14,4 +14,8 @@ class UserInfo extends Model
     protected $fillable = [
         'user_id', 'age', 'weight', 'image', 'blood_group', 'lat', 'long', 'district', 'device_id', 'is_donor','is_verified', 'test_positive_date', 'test_negative_date', 'test_negative_date_second', 'last_donation_date'
     ];
+
+    public function user(){
+        return $this->belongsTo('App\User','id');
+    }
 }
