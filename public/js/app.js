@@ -2115,6 +2115,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "search-component",
   data: function data() {
@@ -38162,7 +38170,7 @@ var render = function() {
                 "div",
                 {
                   key: single.id,
-                  staticClass: "card",
+                  staticClass: "card float-left",
                   staticStyle: { width: "18rem" }
                 },
                 [
@@ -38176,7 +38184,19 @@ var render = function() {
                   _vm._v(" "),
                   _c("div", { staticClass: "card-body" }, [
                     _c("h5", { staticClass: "card-title" }, [
+                      _vm._v("Name: " + _vm._s(single.username))
+                    ]),
+                    _vm._v(" "),
+                    _c("h6", { staticClass: "card-title" }, [
                       _vm._v("Blood Group: " + _vm._s(single.blood_group))
+                    ]),
+                    _vm._v(" "),
+                    _c("h6", { staticClass: "card-title" }, [
+                      _vm._v("Phone Number: " + _vm._s(single.phone))
+                    ]),
+                    _vm._v(" "),
+                    _c("h6", { staticClass: "card-title" }, [
+                      _vm._v("Email: " + _vm._s(single.email))
                     ]),
                     _vm._v(" "),
                     _c("h6", { staticClass: "card-title" }, [

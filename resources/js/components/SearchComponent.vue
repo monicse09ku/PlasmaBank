@@ -34,10 +34,18 @@
     </form>
 
     <div v-if="searchResultHas">
-      <div class="card" style="width: 18rem;" v-for="single in searchObj" :key="single.id">
+      <div
+        class="card float-left"
+        style="width: 18rem;"
+        v-for="single in searchObj"
+        :key="single.id"
+      >
         <img :src="getImgUrl(single.image)" class="card-img-top" alt="single.blood_group" />
         <div class="card-body">
-          <h5 class="card-title">Blood Group: {{single.blood_group}}</h5>
+          <h5 class="card-title">Name: {{single.username}}</h5>
+          <h6 class="card-title">Blood Group: {{single.blood_group}}</h6>
+          <h6 class="card-title">Phone Number: {{single.phone}}</h6>
+          <h6 class="card-title">Email: {{single.email}}</h6>
           <h6 class="card-title">Age: {{single.age}}</h6>
           <h6 class="card-title">Weight: {{single.weight}}</h6>
           <h6 class="card-title">District: {{single.district}}</h6>

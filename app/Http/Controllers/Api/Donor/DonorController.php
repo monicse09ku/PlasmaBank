@@ -23,10 +23,18 @@ class DonorController extends Controller
         }
 
         try {
-            $donors = UserInfo::where([
-                ['blood_group', '=', $request->blood_group],
-                ['district', '=', $request->district]
-            ])->get();
+            // $donors = UserInfo::where([
+            //     ['blood_group', '=', $request->blood_group],
+            //     ['district', '=', $request->district]
+            // ])->get();
+
+            $donors = \DB::table('user_infos')
+                ->join('users', 'users.id', '=', 'user_infos.user_id')
+                ->where([
+                    ['user_infos.blood_group', '=', $request->blood_group],
+                    ['user_infos.district', '=', $request->district]
+                ])
+                ->get();
 
             if (!empty($donors)) {
                 return respond($donors);
