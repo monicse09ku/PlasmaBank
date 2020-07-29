@@ -40,7 +40,18 @@
         v-for="single in searchObj"
         :key="single.id"
       >
-        <img :src="getImgUrl(single.image)" class="card-img-top" alt="single.blood_group" />
+        <img
+          v-if="single.image"
+          :src="getImgUrl(single.image)"
+          class="card-img-top"
+          alt="single.blood_group"
+        />
+        <img
+          v-else
+          src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png"
+          class="card-img-top"
+          alt="avatar"
+        />
         <div class="card-body">
           <h5 class="card-title">Name: {{single.username}}</h5>
           <h6 class="card-title">Blood Group: {{single.blood_group}}</h6>
@@ -101,3 +112,11 @@ export default {
   },
 };
 </script>
+<style scoped>
+div > div.card:nth-child(odd) {
+  margin-right: 5px;
+}
+div > div.card:nth-child(even) {
+  margin-left: 5px;
+}
+</style>

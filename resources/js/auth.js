@@ -8,18 +8,25 @@ class Auth {
         if (this.token) {
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.token;
         }
+
     }
 
-    login(token, user, userInfo) {
+    login(token, user, userInfo = null) {
         window.localStorage.setItem('token', token);
         window.localStorage.setItem('userPB', JSON.stringify(user));
-        window.localStorage.setItem('userInfo', JSON.stringify(userInfo));
+        if (userInfo != null) {
+            window.localStorage.setItem('userInfo', JSON.stringify(userInfo));
+            this.userInfo = JSON.stringify(userInfo);
+        }
 
         this.token = token;
+        this.user = JSON.stringify(user);
 
-        Event.$emit('userLoggedIn');
+        //Event.$emit('userLoggedIn');
 
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+
+        setInterval(() => { this.logout(); window.location.reload(); }, 1800000);
     }
 
     check() {
@@ -27,11 +34,28 @@ class Auth {
     }
 
     logout() {
+
         window.localStorage.removeItem('token');
         window.localStorage.removeItem('userPB');
         window.localStorage.removeItem('userInfo');
         this.token = false;
-        Event.$emit('userLoggedOut');
+        this.user = null;
+        this.userInfo = null;
+
+        //Event.$emit('userLoggedOut');
+    }
+
+    setUserInfo(userInfo = null, user = null) {
+        if (userInfo != null) {
+            window.localStorage.removeItem('userInfo');
+            window.localStorage.setItem('userInfo', JSON.stringify(userInfo));
+            this.userInfo = JSON.stringify(userInfo);
+        }
+        if (user != null) {
+            window.localStorage.removeItem('userPB');
+            window.localStorage.setItem('userPB', JSON.stringify(user));
+            this.user = JSON.stringify(user);
+        }
     }
 }
 

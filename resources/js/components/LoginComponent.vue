@@ -11,10 +11,16 @@
     <div class="form-group">
       <label for="password">Password</label>
 
-      <input class="form-control" type="password" name="password" v-model="password" />
+      <input
+        class="form-control"
+        type="password"
+        name="password"
+        v-model="password"
+        @keyup.enter="login"
+      />
     </div>
 
-    <button @click="login">Login</button>
+    <button @click="login" class="btn btn-primary" :disabled="disabled == 1">Login</button>
   </div>
 </template>
 <script>
@@ -24,24 +30,23 @@ export default {
     return {
       username: "",
       password: "",
+      disabled: 0,
     };
   },
   methods: {
-    login() {
+    login(event) {
+      this.disabled = 1;
       let data = {
         phone: this.username,
         password: this.password,
       };
 
-      axios
-        .post("/api/login", data)
-        .then(({ data }) => {
-          auth.login(data.token, data.data, data.userInfo);
-          this.$router.push({ name: "search" });
-        })
-        .catch(({ response }) => {
-          alert(response.data.message);
-        });
+      api.call("post", "api/login", data).then(({ data }) => {
+        auth.login(data.token, data.data, data.userInfo);
+        this.$router.push({ name: "search" });
+      });
+
+      this.disabled = 0;
     },
   },
 };

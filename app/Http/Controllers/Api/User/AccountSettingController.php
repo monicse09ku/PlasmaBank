@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use App\Models\UserInfo;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Storage;
 
 class AccountSettingController extends Controller
 {
@@ -29,36 +30,135 @@ class AccountSettingController extends Controller
      */
     public function update(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'phone' => 'required',
-            'address' => 'required',
+        $update = false;
+        $validate = \Validator::make($request->all(), [
+            'user_id' => ['required', 'integer'],
+            'username' => ['required', 'string'],
+            'email' => ['required', 'email'],
+            'phone' => ['required', 'string'],
+            'sex' => ['required', 'string'],
+            'image' => ['nullable', 'mimes:jpeg,bmp,png', 'max:1999'],
+            'age' => ['required', 'integer'],
+            'weight' => ['required', 'integer'],
+            'blood_group' => ['required', 'string'],
+            'district' => ['required', 'string'],
+            'test_positive_date' => 'required|date',
+            'test_negative_date' => 'required|date',
+            'test_negative_date_second' => 'date',
         ]);
+        if ($validate->fails()) {
+            $messages = $validate->messages();
+            return respondError($messages);
+        }
+        $user_id  = $request->input('user_id');
 
         try {
-            $data = $request->only('name', 'phone', 'address');
-
-            if ($request->hasFile('avatar')) {
-                $filename = \UploadBuilder::uploadFile($request->file('avatar'), 'avatars')->fit(200, 200);
-                $data['avatar'] = $filename;
+            $user           = User::find($user_id);
+            $user->username = $request->input('username');
+            $user->email    = $request->input('email');
+            $user->phone    = $request->input('phone');
+            $user->sex      = $request->input('sex');
+            if ($user->isDirty()) {
+                try {
+                    $user->update();
+                    $update = true;
+                } catch (\Exception $e) {
+                    return respondError($e->getMessage());
+                }
             }
 
-            $user = User::findOrFail(auth()->id());
-            $oldAvatar = $user->avatar;
+            $user_info = UserInfo::firstWhere('user_id', $user_id);
+            if (!empty($user_info)) {
+                $user_info->weight                    = $request->input('weight');
+                $user_info->age                       = $request->input('age');
+                $user_info->blood_group               = $request->input('blood_group');
+                $user_info->district                  = $request->input('district');
+                $user_info->test_positive_date        = $request->input('test_positive_date');
+                $user_info->test_negative_date        = $request->input('test_negative_date');
+                $user_info->test_negative_date_second = $request->input('test_negative_date_second');
 
-            if ($user->update($data)) {
-                if (isset($filename) && $oldAvatar != null) {
-                    \UploadBuilder::deleteFile($oldAvatar);
+
+                try {
+                    if ($request->hasFile('image')) {
+                        $previousImage = !empty($user_info->image) ? $user_info->image : '';
+                        $image = $this->uploadImageLocal($request->file('image'), $previousImage);
+
+                        $user_info->image = $image;
+                    }
+
+                    if ($user_info->isDirty()) {
+                        $user_info->update();
+                        return (new UserResource($user_info))->additional([
+                            'user' => User::where('id', $user_info->user_id)->first()
+                        ]);
+                    } elseif ($update) {
+                        return (new UserResource($user_info))->additional([
+                            'user' => User::where('id', $user_info->user_id)->first()
+                        ]);
+                    } else {
+                        return true;
+                    }
+                } catch (\Exception $e) {
+                    return respondError($e->getMessage());
                 }
+            } else {
+                try {
+                    $image = '';
+                    if ($request->hasFile('image')) {
+                        $image = $this->uploadImageLocal($request->file('image'));
+                    }
+                    $userInfo                             = new UserInfo();
+                    $userInfo->user_id                    = $user_id;
+                    $userInfo->weight                    = $request->input('weight');
+                    $userInfo->age                       = $request->input('age');
+                    $userInfo->blood_group               = $request->input('blood_group');
+                    $userInfo->district                  = $request->input('district');
+                    $userInfo->test_positive_date        = $request->input('test_positive_date');
+                    $userInfo->test_negative_date        = $request->input('test_negative_date');
+                    $userInfo->test_negative_date_second = $request->input('test_negative_date_second');
+                    $userInfo->image = $image;
 
-                return respondSuccess(UPDATE_SUCCESS);
+                    $userInfo->save();
+                    return (new UserResource($userInfo))->additional([
+                        'user' => User::where('id', $userInfo->user_id)->first()
+                    ]);
+                } catch (\Exception $e) {
+                    return respondError($e->getMessage());
+                }
             }
         } catch (\Exception $e) {
-            if (isset($filename)) {
-                \UploadBuilder::deleteFile($filename);
-            }
-            return respondError(UPDATE_FAIL);
+            return respondError($e->getMessage());
         }
+    }
+
+    /**
+     * Upload image
+     * in public directory
+     * @param file $imageFile image type file
+     */
+    public function uploadImageLocal($imageFile, $previousImage = 'noImage')
+    {
+
+        // get file name with extension
+        $fileNameWithExtension = $imageFile->getClientOriginalName();
+
+        // get the file name
+        $fileName = pathinfo($fileNameWithExtension, PATHINFO_FILENAME);
+
+        // get just extension
+        $fileExtension = $imageFile->getClientOriginalExtension();
+
+        // file name to store
+        $fileNameToStore = $fileName . '_' . time() . '.' . $fileExtension;
+
+        // local file upload
+        $path = $imageFile->storeAs('public/images', $fileNameToStore);
+
+        if ($previousImage != 'noImage') {
+            Storage::delete('public/images/' . $previousImage);
+        }
+
+        return $fileNameToStore;
     }
 
     /**
@@ -109,20 +209,20 @@ class AccountSettingController extends Controller
 
         $user_info = UserInfo::where('user_id', $request->user_id)->first();
 
-        if(!empty($user_info)){
-            
-            try{
+        if (!empty($user_info)) {
 
-                if(!empty($user_info->image)){
-                    if(file_exists(public_path() . '/images/donors/' . $user_info->image)){
+            try {
+
+                if (!empty($user_info->image)) {
+                    if (file_exists(public_path() . '/images/donors/' . $user_info->image)) {
                         unlink(public_path() . '/images/donors/' . $user_info->image);
                     }
                 }
 
-                if(!empty($request->image)){
+                if (!empty($request->image)) {
                     $file = base64_decode($request->image);
-                    $safeName = strtotime(date('Y-m-d H:i:s')).'.'.'png';
-                    $success = file_put_contents(public_path().'/images/donors/'.$safeName, $file);
+                    $safeName = strtotime(date('Y-m-d H:i:s')) . '.' . 'png';
+                    $success = file_put_contents(public_path() . '/images/donors/' . $safeName, $file);
 
                     UserInfo::where('user_id', $user_info->user_id)->update([
                         'image' => $safeName
@@ -132,10 +232,10 @@ class AccountSettingController extends Controller
                 }
 
                 return respondError('Could not Upload Image!');
-            }catch(\Exception $e){
+            } catch (\Exception $e) {
                 return respondError('Could not Upload Image!');
             }
-        }else{
+        } else {
             return respondError('User Not Found...');
         }
     }

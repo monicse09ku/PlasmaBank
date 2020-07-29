@@ -34,7 +34,7 @@ class RegisterController extends Controller
         $validator = \Validator::make($request->all(), [
             'username' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
             'phone' => ['required', 'string', 'max:255', 'unique:users'],
             'sex' => ['required', 'string'],
         ]);
@@ -42,11 +42,11 @@ class RegisterController extends Controller
         if ($validator->fails()) {
             $failedRules = $validator->failed();
 
-            if(isset($failedRules['email']['Unique'])) {
+            if (isset($failedRules['email']['Unique'])) {
                 return respondError('Email Already Taken');
             }
 
-            if(isset($failedRules['phone']['Unique'])) {
+            if (isset($failedRules['phone']['Unique'])) {
                 return respondError('Phone Number Already Taken');
             }
 
@@ -55,7 +55,7 @@ class RegisterController extends Controller
 
         try {
             event(new Registered($user = $this->create($request->all())));
-            
+
             if ($user) {
                 return $this->createAccessToken($user);
             }
@@ -74,25 +74,24 @@ class RegisterController extends Controller
             'age' => ['required', 'integer'],
             'weight' => ['required', 'integer'],
             'blood_group' => ['required', 'string'],
-            'lat' => ['required', 'string'],
-            'long' => ['required', 'string'],
+            'lat' => ['string'],
+            'long' => ['string'],
             'district' => ['required', 'string'],
-            'device_id' => ['required', 'string'],
+            'device_id' => ['string'],
             'test_positive_date' => 'required',
         ]);
 
         if ($validator->fails()) {
             $failedRules = $validator->failed();
-
             return respondError('Parameters failed validation');
         }
 
-        if(!empty($request->test_negative_date)){
-            if($request->test_positive_date > $request->test_negative_date){
+        if (!empty($request->test_negative_date)) {
+            if ($request->test_positive_date > $request->test_negative_date) {
                 return respondError('Wrong Test Negative Date');
             }
 
-            if(!empty($request->test_negative_date_second) && ($request->test_negative_date > $request->test_negative_date_second)){
+            if (!empty($request->test_negative_date_second) && ($request->test_negative_date > $request->test_negative_date_second)) {
                 return respondError('Wrong Test Negative Date Second Date');
             }
         }
@@ -100,13 +99,13 @@ class RegisterController extends Controller
         try {
             $user = User::where('id', $request->user_id)->first();
 
-            if(!empty($request->image)){
+            if (!empty($request->image)) {
                 $file = base64_decode($request->image);
-                $safeName = strtotime(date('Y-m-d H:i:s')).'.'.'png';
-                $success = file_put_contents(public_path().'/images/donors/'.$safeName, $file);
+                $safeName = strtotime(date('Y-m-d H:i:s')) . '.' . 'png';
+                $success = file_put_contents(public_path() . '/images/donors/' . $safeName, $file);
             }
 
-            if(!empty($user)){
+            if (!empty($user)) {
                 UserInfo::create([
                     'user_id' => $request->user_id,
                     'age' => $request->age,
@@ -127,16 +126,13 @@ class RegisterController extends Controller
                 return (new UserResource($user))->additional([
                     'userInfo' => UserInfo::where('user_id', $user->id)->first()
                 ]);
-
-            }else{
+            } else {
                 return respondError('User not found!!!');
             }
-
         } catch (\Exception $e) {
             return respondError($e->getMessage());
             return respondError('Failed to register!');
         }
-
     }
 
     /**
@@ -175,7 +171,7 @@ class RegisterController extends Controller
 
     protected function checkIsDonor($user, $request)
     {
-        if($request->age > 18 && $request->age < 55 && $request->weight > 55){
+        if ($request->age > 18 && $request->age < 55 && $request->weight > 55) {
             return true;
         }
 

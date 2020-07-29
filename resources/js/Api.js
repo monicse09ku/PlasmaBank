@@ -9,9 +9,12 @@ class Api {
                     resolve(response);
                 })
                 .catch(({ response }) => {
+
                     if (response.status === 401) {
                         auth.logout();
                     }
+
+                    alert(response.data.message);
 
                     reject(response);
                 });

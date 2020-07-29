@@ -24,7 +24,7 @@ Route::post('/create-user', 'Api\Auth\RegisterController@createUser');
 Route::middleware('auth:api')
     ->namespace('Api')
     ->group(function () {
-        
+
         Route::post('/complete-registration', 'Auth\RegisterController@completeRegistration');
         Route::post('/upload-avatar', 'User\AccountSettingController@uploadAvatar');
 
@@ -32,5 +32,6 @@ Route::middleware('auth:api')
         Route::post('/rate-donor', 'Donor\DonorController@ratingDonor');
 
         Route::get('/me', 'User\AccountSettingController@me');
+        Route::post('/update', 'User\AccountSettingController@update');
         Route::post('/logout', 'Auth\LoginController@logout');
     });
